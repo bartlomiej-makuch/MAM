@@ -98,30 +98,30 @@ disqusShortname = ""
       url = "blogs/blog5"
 
     [[params.tiles.showcase]]
-      title = "Tempus"
-      subtitle = "Feugiat Amet Tempus"
+      title = "Sample GDP analysis"
+      subtitle = "Mature vs emerging markets"
       image = "pic02.jpg"
-      url = "blogs/tempus"
+      url = "projects/project1"
 
-    [[params.tiles.showcase]]
+#    [[params.tiles.showcase]]
 #      title = "Magna"
 #     subtitle = "Lorem Etiam Nullam"
 #      image = "pic03.jpg"
 #      url = "blogs/magna"
 
-    [[params.tiles.showcase]]
+#    [[params.tiles.showcase]]
 #      title = "Ipsum"
 #      subtitle = "Nisl Sed Aliquam"
 #      image = "pic04.jpg"
 #      url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
+#    [[params.tiles.showcase]]
 #      title = "Consequat"
 #      subtitle = "Ipsum Dolor Sit Amet"
 #      image = "pic05.jpg"
 #      url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
+#    [[params.tiles.showcase]]
 #      title = "Etiam"
 #      subtitle = "Feugiat Amet Tempus"
 #      image = "pic06.jpg"

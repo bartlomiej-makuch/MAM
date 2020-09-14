@@ -31,6 +31,15 @@
     </item>
     
     <item>
+      <title>Sample analysis</title>
+      <link>/projects/project1/</link>
+      <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>
+      
+      <guid>/projects/project1/</guid>
+      <description>GDP components over time and among countries UN_GDP_data &amp;lt;- read_excel(here::here(&amp;quot;data&amp;quot;, &amp;quot;Download-GDPconstant-USD-countries.xls&amp;quot;), # Excel filename sheet=&amp;quot;Download-GDPconstant-USD-countr&amp;quot;, # Sheet name skip=2) # Number of rows to skip Tidying the data tidy_GDP_data &amp;lt;- UN_GDP_data %&amp;gt;% pivot_longer(cols = 4:51, names_to = &amp;#39;Year&amp;#39;, values_to = &amp;#39;Value&amp;#39;) %&amp;gt;% filter(IndicatorName %in% c(&amp;#39;Gross capital formation&amp;#39;, &amp;#39;Exports of goods and services&amp;#39;, &amp;#39;Imports of goods and services&amp;#39;, &amp;#39;General government final consumption expenditure&amp;#39;, &amp;#39;Household consumption expenditure (including Non-profit institutions serving households)&amp;#39;, &amp;#39;Gross Domestic Product (GDP)&amp;#39;)) %&amp;gt;% mutate(Value = Value/1e9) %&amp;gt;% # rename indicators using case_when and mutate mutate(IndicatorName = case_when(IndicatorName == &amp;#39;Gross capital formation&amp;#39; ~ &amp;#39;Gross capital formation&amp;#39;, IndicatorName == &amp;#39;Exports of goods and services&amp;#39; ~ &amp;#39;Exports&amp;#39;, IndicatorName == &amp;#39;Imports of goods and services&amp;#39; ~ &amp;#39;Imports&amp;#39;, IndicatorName == &amp;#39;General government final consumption expenditure&amp;#39; ~ &amp;#39;Government expenditure&amp;#39;, IndicatorName == &amp;#39;Household consumption expenditure (including Non-profit institutions serving households)&amp;#39; ~ &amp;#39;Household expenditure&amp;#39;, IndicatorName == &amp;#39;Gross Domestic Product (GDP)&amp;#39; ~ &amp;#39;GDP_given&amp;#39;)) glimpse(tidy_GDP_data) ## Rows: 63,072 ## Columns: 5 ## $ CountryID &amp;lt;dbl&amp;gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4… ## $ Country &amp;lt;chr&amp;gt; &amp;quot;Afghanistan&amp;quot;, &amp;quot;Afghanistan&amp;quot;, &amp;quot;Afghanistan&amp;quot;, &amp;quot;Afghanist… ## $ IndicatorName &amp;lt;chr&amp;gt; &amp;quot;Household expenditure&amp;quot;, &amp;quot;Household expenditure&amp;quot;, &amp;quot;Hous… ## $ Year &amp;lt;chr&amp;gt; &amp;quot;1970&amp;quot;, &amp;quot;1971&amp;quot;, &amp;quot;1972&amp;quot;, &amp;quot;1973&amp;quot;, &amp;quot;1974&amp;quot;, &amp;quot;1975&amp;quot;, &amp;quot;1976&amp;quot;,… ## $ Value &amp;lt;dbl&amp;gt; 5.</description>
+    </item>
+    
+    <item>
       <title>Tempus</title>
       <link>/blogs/tempus/</link>
       <pubDate>Tue, 31 Oct 2017 22:26:13 -0500</pubDate>
