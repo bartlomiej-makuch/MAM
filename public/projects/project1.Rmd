@@ -2,10 +2,10 @@
 date: "2017-10-31T22:42:51-05:00"
 description: Sample GDP analysis over time
 draft: false
-image: pic03.jpg
+image: pic02.jpg
 keywords: ""
 slug: project1
-title: Sample analysis   
+title: Sample GDP analysis   
 ---
 
 
@@ -88,7 +88,7 @@ glimpse(tidy_GDP_data)
 country_list <- c("United States","India", "Germany")
 
 ```
-## Createing the plot
+## Creating the plot
 
 
 ```{r challenge2 plot1, fig.width = 8, fig.height = 6}

@@ -8,7 +8,7 @@
 	<meta name="description" content="Student of 2021 MAM London Business School cohort">
 	<meta name="author" content="Bartlomiej Makuch">
 	<meta name="generator" content="Hugo 0.74.3" />
-	<title>Mask Acceptance &middot; Portfolio website - Bartlomiej Makuch</title>
+	<title>Tim Burton vs Steven Spielberg &middot; Portfolio website - Bartlomiej Makuch</title>
 	<!-- Stylesheets -->
 	
 	<link rel="stylesheet" href="../../css/main.css"/>
@@ -75,202 +75,669 @@
                     <section id="one">
                         <div class="inner">
                             <header class="major">
-                                <h1>Mask Acceptance</h1>
+                                <h1>Tim Burton vs Steven Spielberg</h1>
                             </header>
                             
-                                <span class="image main"><img src="../../img/blogs/pic07.jpg" alt="" /></span>
+                                <span class="image main"><img src="../../img/blogs/pic01.jpg" alt="" /></span>
                             
                             
+<script src="../../rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="../../rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 
-<div id="nyt-mask-use" class="section level2">
-<h2>NYT mask use</h2>
-<p>Github source for data <a href="https://github.com/nytimes/covid-19-data/tree/master/mask-use" class="uri">https://github.com/nytimes/covid-19-data/tree/master/mask-use</a></p>
+<div id="imdb-ratings-differences-between-directors" class="section level1">
+<h1>IMDB ratings: Differences between directors</h1>
+<p>We are going to explore whether the mean IMDB rating for Steven Spielberg and Tim Burton are the same or not.</p>
+<p>We write down the null and alternative hypotheses.</p>
+<p><em>Null Hypothesis (H0)</em> | The mean IMDB rating for Spielberg films = The mean IMDB rating for Burton films (Mean IMDB rating for Spielberg films - Mean IMDB rating for Burton films = 0)
+<em>Alternative Hypothesis (H1)</em> | The mean IMDB rating for Spielberg films != The mean IMDB rating for Burton films (Mean IMDB rating for Spielberg films - Mean IMDB rating for Burton films != 0 )</p>
+<div id="load-the-data" class="section level2">
+<h2>Load the data</h2>
+<pre class="r"><code>movies &lt;- read_csv(here::here(&quot;data&quot;, &quot;movies.csv&quot;))
+glimpse(movies)</code></pre>
+<pre><code>## Rows: 2,961
+## Columns: 11
+## $ title               &lt;chr&gt; &quot;Avatar&quot;, &quot;Titanic&quot;, &quot;Jurassic World&quot;, &quot;The Aveng…
+## $ genre               &lt;chr&gt; &quot;Action&quot;, &quot;Drama&quot;, &quot;Action&quot;, &quot;Action&quot;, &quot;Action&quot;, …
+## $ director            &lt;chr&gt; &quot;James Cameron&quot;, &quot;James Cameron&quot;, &quot;Colin Trevorro…
+## $ year                &lt;dbl&gt; 2009, 1997, 2015, 2012, 2008, 1999, 1977, 2015, 2…
+## $ duration            &lt;dbl&gt; 178, 194, 124, 173, 152, 136, 125, 141, 164, 93, …
+## $ gross               &lt;dbl&gt; 7.61e+08, 6.59e+08, 6.52e+08, 6.23e+08, 5.33e+08,…
+## $ budget              &lt;dbl&gt; 2.37e+08, 2.00e+08, 1.50e+08, 2.20e+08, 1.85e+08,…
+## $ cast_facebook_likes &lt;dbl&gt; 4834, 45223, 8458, 87697, 57802, 37723, 13485, 92…
+## $ votes               &lt;dbl&gt; 886204, 793059, 418214, 995415, 1676169, 534658, …
+## $ reviews             &lt;dbl&gt; 3777, 2843, 1934, 2425, 5312, 3917, 1752, 1752, 3…
+## $ rating              &lt;dbl&gt; 7.9, 7.7, 7.0, 8.1, 9.0, 6.5, 8.7, 7.5, 8.5, 7.2,…</code></pre>
+<pre class="r"><code>skim(movies)</code></pre>
+<table style='width: auto;'
+        class='table table-condensed'>
+<caption>
+(#tab:load_movies_data)Data summary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:left;">
+movies
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of rows
+</td>
+<td style="text-align:left;">
+2961
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of columns
+</td>
+<td style="text-align:left;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+_______________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Column type frequency:
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+numeric
+</td>
+<td style="text-align:left;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+________________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Group variables
+</td>
+<td style="text-align:left;">
+None
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+empty
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+<th style="text-align:right;">
+whitespace
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+title
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2907
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+genre
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+director
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1366
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+mean
+</th>
+<th style="text-align:right;">
+sd
+</th>
+<th style="text-align:right;">
+p0
+</th>
+<th style="text-align:right;">
+p25
+</th>
+<th style="text-align:right;">
+p50
+</th>
+<th style="text-align:right;">
+p75
+</th>
+<th style="text-align:right;">
+p100
+</th>
+<th style="text-align:left;">
+hist
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+year
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2.00e+03
+</td>
+<td style="text-align:right;">
+9.95e+00
+</td>
+<td style="text-align:right;">
+1920.0
+</td>
+<td style="text-align:right;">
+2.00e+03
+</td>
+<td style="text-align:right;">
+2.00e+03
+</td>
+<td style="text-align:right;">
+2.01e+03
+</td>
+<td style="text-align:right;">
+2.02e+03
+</td>
+<td style="text-align:left;">
+▁▁▁▂▇
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+duration
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.10e+02
+</td>
+<td style="text-align:right;">
+2.22e+01
+</td>
+<td style="text-align:right;">
+37.0
+</td>
+<td style="text-align:right;">
+9.50e+01
+</td>
+<td style="text-align:right;">
+1.06e+02
+</td>
+<td style="text-align:right;">
+1.19e+02
+</td>
+<td style="text-align:right;">
+3.30e+02
+</td>
+<td style="text-align:left;">
+▃▇▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gross
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5.81e+07
+</td>
+<td style="text-align:right;">
+7.25e+07
+</td>
+<td style="text-align:right;">
+703.0
+</td>
+<td style="text-align:right;">
+1.23e+07
+</td>
+<td style="text-align:right;">
+3.47e+07
+</td>
+<td style="text-align:right;">
+7.56e+07
+</td>
+<td style="text-align:right;">
+7.61e+08
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+budget
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4.06e+07
+</td>
+<td style="text-align:right;">
+4.37e+07
+</td>
+<td style="text-align:right;">
+218.0
+</td>
+<td style="text-align:right;">
+1.10e+07
+</td>
+<td style="text-align:right;">
+2.60e+07
+</td>
+<td style="text-align:right;">
+5.50e+07
+</td>
+<td style="text-align:right;">
+3.00e+08
+</td>
+<td style="text-align:left;">
+▇▂▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cast_facebook_likes
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.24e+04
+</td>
+<td style="text-align:right;">
+2.05e+04
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+2.24e+03
+</td>
+<td style="text-align:right;">
+4.60e+03
+</td>
+<td style="text-align:right;">
+1.69e+04
+</td>
+<td style="text-align:right;">
+6.57e+05
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+votes
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.09e+05
+</td>
+<td style="text-align:right;">
+1.58e+05
+</td>
+<td style="text-align:right;">
+5.0
+</td>
+<td style="text-align:right;">
+1.99e+04
+</td>
+<td style="text-align:right;">
+5.57e+04
+</td>
+<td style="text-align:right;">
+1.33e+05
+</td>
+<td style="text-align:right;">
+1.69e+06
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+reviews
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5.03e+02
+</td>
+<td style="text-align:right;">
+4.94e+02
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+1.99e+02
+</td>
+<td style="text-align:right;">
+3.64e+02
+</td>
+<td style="text-align:right;">
+6.31e+02
+</td>
+<td style="text-align:right;">
+5.31e+03
+</td>
+<td style="text-align:left;">
+▇▁▁▁▁
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+rating
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+6.39e+00
+</td>
+<td style="text-align:right;">
+1.05e+00
+</td>
+<td style="text-align:right;">
+1.6
+</td>
+<td style="text-align:right;">
+5.80e+00
+</td>
+<td style="text-align:right;">
+6.50e+00
+</td>
+<td style="text-align:right;">
+7.10e+00
+</td>
+<td style="text-align:right;">
+9.30e+00
+</td>
+<td style="text-align:left;">
+▁▁▆▇▁
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># We use the duplicated() function to identify duplicates, and find that there are none
+summary(duplicated(movies))</code></pre>
+<pre><code>##    Mode   FALSE 
+## logical    2961</code></pre>
+<pre class="r"><code>director_rating &lt;- movies %&gt;% 
+  filter(director %in% c(&quot;Steven Spielberg&quot;,&quot;Tim Burton&quot;))
+
+# We summarise data using mean and CI functions
+director_rating2 &lt;- director_rating %&gt;%
+  group_by(director) %&gt;%
+  dplyr::summarise(mean_rating = mean(rating),
+            uci_rating = CI(rating)[1],
+            lci_rating = CI(rating)[3])
+
+# We use geom_errorbar and geom_react in order to reproduce the graph
+ggplot(director_rating2, aes(x = mean_rating, y = reorder(director, mean_rating), colour=director)) +
+  geom_point(size=5, show.legend = FALSE)+
+  # We use geom_rect to draw overlapping sections
+  geom_rect(aes(xmin=uci_rating[2], xmax=lci_rating[1], ymin=-Inf, ymax=Inf), colour = &quot;light grey&quot;, alpha = 0.2)+
+  
+  # We use geom_errorbar to draw CI intervals
+  geom_errorbar(aes(xmin = lci_rating, xmax = uci_rating), size=1.3, width=.05, show.legend = FALSE)+
+  geom_text(aes(label = round(lci_rating,2), x = lci_rating), size= 4.5, vjust = -1, colour =&quot;black&quot;)+
+  geom_text(aes(label = round(mean_rating,2), x = mean_rating), size= 6, vjust = -1, colour =&quot;black&quot;)+
+  geom_text(aes(label = round(uci_rating,2), x = uci_rating), size= 4, vjust = -1, colour =&quot;black&quot;)+
+  
+  labs(x=&quot;Mean IMBD Rating&quot;, 
+       y= &quot;&quot;, title= &quot;Do Spielberg and Burton have the same mean IMDB ratings?&quot;, 
+       subtitle= &quot;95% confidence intervals overlap&quot;)+
+  theme_bw()+
+  NULL</code></pre>
+<p><img src="../../blogs/blog5_files/figure-html/reproducing_director_CI-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>In addition, we run a hypothesis test using both the <code>t.test</code> command and the <code>infer</code> package to simulate from a null distribution, where we assume zero difference between the two.</p>
 </div>
-<div id="getting-the-data" class="section level2">
-<h2>Getting the data</h2>
-<pre class="r"><code>#source for data
-url &lt;- &quot;https://github.com/nytimes/covid-19-data/raw/master/mask-use/mask-use-by-county.csv&quot;
+<div id="hypothesis-testing" class="section level2">
+<h2>Hypothesis testing</h2>
+<pre class="r"><code>director_rating &lt;- movies %&gt;%
+    filter(director %in% c(&quot;Steven Spielberg&quot;,&quot;Tim Burton&quot;)) # select directors
+  t.test(rating~director, director_rating)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  rating by director
+## t = 3, df = 31, p-value = 0.01
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.16 1.13
+## sample estimates:
+## mean in group Steven Spielberg       mean in group Tim Burton 
+##                           7.57                           6.93</code></pre>
+<p>First, we use the t.test to calculate the p-Value. We conclude that there is a statistically significant difference in means, since our p-value is 0.01 and hence |p|&lt;a (where a=0.05) (or |t| &gt; 2.00). Therefore, we reject the null hypothesis. Now we run the simulation with the infer package:</p>
+<pre class="r"><code>set.seed(1234) # We set a specific seed value
 
-nyt_mask_survey &lt;- read_csv(url)
+# We run a simulation with infer package
 
-nyt_mask_survey &lt;- nyt_mask_survey %&gt;%
-  clean_names() %&gt;% 
-  mutate(
-    mostly_yes= frequently+always,
-    mostly_no = never+rarely,
-    delta = mostly_yes-mostly_no
-  )
+director_hypothesis_test&lt;- director_rating %&gt;%
+  
+  specify(rating ~ director) %&gt;%
+  
+  # Here, `hypothesize` is used to set the null hypothesis as a test for independence, i.e., that there is no difference between the two population means.
+  hypothesise(null=&quot;independence&quot;) %&gt;% 
+  # The `type` argument within generate is set to permute, which is the argument when generating a null distribution for a hypothesis test.
+  generate(reps=1000, type=&quot;permute&quot;) %&gt;% 
+  #calculate the observed difference in means with bootstrap
+  calculate(stat=&quot;diff in means&quot;,order = c(&quot;Steven Spielberg&quot;,&quot;Tim Burton&quot;))
 
-glimpse(nyt_mask_survey)</code></pre>
-<pre><code>## Rows: 3,142
-## Columns: 9
-## $ countyfp   &lt;chr&gt; &quot;01001&quot;, &quot;01003&quot;, &quot;01005&quot;, &quot;01007&quot;, &quot;01009&quot;, &quot;01011&quot;, &quot;010…
-## $ never      &lt;dbl&gt; 0.053, 0.083, 0.067, 0.020, 0.053, 0.031, 0.102, 0.152, 0.…
-## $ rarely     &lt;dbl&gt; 0.074, 0.059, 0.121, 0.034, 0.114, 0.040, 0.053, 0.108, 0.…
-## $ sometimes  &lt;dbl&gt; 0.134, 0.098, 0.120, 0.096, 0.180, 0.144, 0.257, 0.130, 0.…
-## $ frequently &lt;dbl&gt; 0.295, 0.323, 0.201, 0.278, 0.194, 0.286, 0.137, 0.167, 0.…
-## $ always     &lt;dbl&gt; 0.444, 0.436, 0.491, 0.572, 0.459, 0.500, 0.451, 0.442, 0.…
-## $ mostly_yes &lt;dbl&gt; 0.739, 0.759, 0.692, 0.850, 0.653, 0.786, 0.588, 0.609, 0.…
-## $ mostly_no  &lt;dbl&gt; 0.127, 0.142, 0.188, 0.054, 0.167, 0.071, 0.155, 0.260, 0.…
-## $ delta      &lt;dbl&gt; 0.612, 0.617, 0.504, 0.796, 0.486, 0.715, 0.433, 0.349, 0.…</code></pre>
+
+diff_rating &lt;- director_rating %&gt;% 
+  specify(rating ~ director) %&gt;% 
+  calculate(stat = &quot;diff in means&quot;, order = c(&quot;Steven Spielberg&quot;,&quot;Tim Burton&quot;))
+#get p_Value through infer package 
+director_p_value &lt;- director_hypothesis_test %&gt;% 
+    get_p_value(obs_stat = diff_rating[1,1], direction = &quot;both&quot;)
+
+kbl(director_p_value,col.names=c(&quot;p-value&quot;), caption=&quot;Simulation-based null distribution using the &#39;infer&#39; package&quot;) %&gt;%
+kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+(#tab:infer_hypothesis_test)Simulation-based null distribution using the ‘infer’ package
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+p-value
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.008
+</td>
+</tr>
+</tbody>
+</table>
+<p>Again, on the basis of this simulation-based hypothesis test we reject the null hypothesis stating that there is no difference in means of IMDB rating for Spielberg films and for Burton films as the p-Value is smaller than the alpha value (0.05). Therefore there is statistically significant difference between the mean ratings of the films of the two film directors. We visualise the simulation-based null distribution:</p>
+<pre class="r"><code>#We calculate CI using infer package
+director_percentile_ci &lt;- director_hypothesis_test %&gt;%
+  get_confidence_interval(level = 0.95, type = &quot;percentile&quot;)
+
+#We show a plot with shaded confidence interval using infer package
+director_hypothesis_test %&gt;% visualise() +
+  
+  shade_confidence_interval(endpoints = director_percentile_ci, size=0.4, color= &quot;yellow&quot;, fill=&quot;light yellow&quot;) +
+  shade_p_value(obs_stat = diff_rating, direction = &quot;both&quot;, size=1.1) +
+  
+  labs(title = &quot;Are Spielberg and Burton Equally Good Directors?&quot;, 
+       subtitle=&quot;Simulation-based null distribution: the p-value (red) lies well outside the null distribution (yellow), allowing us to reject the null hypothesis&quot;, x=&quot;Difference in Mean IMDB Rating Between Directors&quot;, y=&quot;Count&quot;)+theme_fivethirtyeight() + theme(axis.title = element_text()) + scale_x_continuous(breaks=seq(-1.0, 1.0, by = 0.1), limits=c(-1.0,1.0))</code></pre>
+<p><img src="../../blogs/blog5_files/figure-html/visualizeinfer_bootstrap_hypothesis_test-1.png" width="1440" style="display: block; margin: auto;" />
+In the graph it is shown that the p-value is outside of the 95% confidence interval (alpha = 0.05). We therefore reject the null hypothesis (H0) that there is no difference in the mean IMDB ratings of the films of Tim Burton and Steven Spielberg.</p>
 </div>
-<div id="choropleth-map" class="section level2">
-<h2>Choropleth map</h2>
-<p>The FIPS code is a federal code that numbers states and territories of the US. It extends to the county level with an additional four digits, so every county in the US has a unique six-digit identifier, where the first two digits represent the state.</p>
-<p>We will be using Kieran Healy’s <code>socviz</code> package which among other things contains <code>county_map</code> and <code>county_data</code></p>
-<pre class="r"><code># America’s choropleths; use county_map that has all polygons 
-# and county data with demographics/election data from socviz datafile
-# The id field is the FIPS code for the county
-county_map %&gt;% 
-  sample_n(5)</code></pre>
-<pre><code>##      long      lat  order  hole piece            group    id
-## 1 2080754  -465740  82528 FALSE     1 0500000US24039.1 24039
-## 2  782915 -1417923  71760 FALSE     1 0500000US22041.1 22041
-## 3 2067398  -735130 126574 FALSE     1 0500000US37187.1 37187
-## 4 2411284   386027  76897 FALSE     5 0500000US23009.5 23009
-## 5  834819 -1377634  99321 FALSE     1 0500000US28149.1 28149</code></pre>
-<pre class="r"><code>county_data %&gt;%
-    sample_n(5)</code></pre>
-<pre><code>##      id                name state census_region      pop_dens   pop_dens4
-## 1 54065       Morgan County    WV         South [   50,  100) [ 45,  118)
-## 2 55005       Barron County    WI       Midwest [   50,  100) [ 45,  118)
-## 3 51101 King William County    VA         South [   50,  100) [ 45,  118)
-## 4 46059         Hand County    SD       Midwest [    0,   10) [  0,   17)
-## 5 05011      Bradley County    AR         South [   10,   50) [ 17,   45)
-##     pop_dens6   pct_black   pop female white black travel_time land_area
-## 1 [ 45,   82) [ 0.0, 2.0) 17453   50.4  97.1   0.8        33.5       229
-## 2 [ 45,   82) [ 0.0, 2.0) 45455   50.3  96.1   1.1        19.4       863
-## 3 [ 45,   82) [15.0,25.0) 16186   51.3  77.9  17.6        34.2       274
-## 4 [  0,    9) [ 0.0, 2.0)  3345   49.7  98.0   0.1        14.9      1437
-## 5 [  9,   25) [25.0,50.0) 11148   51.2  68.4  27.4        20.1       649
-##   hh_income su_gun4 su_gun6  fips votes_dem_2016 votes_gop_2016
-## 1     36046 [11,54] [10,12) 54065           1568           5718
-## 2     44054 [ 5, 8) [ 7, 8) 55005           7881          13595
-## 3     62670 [ 8,11) [10,12) 51101           2752           5963
-## 4     47679 [ 0, 5) [ 0, 4) 46059            334           1391
-## 5     30409 [ 8,11) [ 8,10)  5011           1317           2163
-##   total_votes_2016 per_dem_2016 per_gop_2016 diff_2016 per_dem_2012
-## 1             7635        0.205        0.749      4150        0.336
-## 2            22514        0.350        0.604      5714        0.482
-## 3             9088        0.303        0.656      3211        0.375
-## 4             1818        0.184        0.765      1057        0.311
-## 5             3617        0.364        0.598       846        0.398
-##   per_gop_2012 diff_2012 winner partywinner16 winner12 partywinner12 flipped
-## 1        0.641      2147  Trump    Republican   Romney    Republican      No
-## 2        0.505       530  Trump    Republican   Romney    Republican      No
-## 3        0.614      2119  Trump    Republican   Romney    Republican      No
-## 4        0.672       667  Trump    Republican   Romney    Republican      No
-## 5        0.583       671  Trump    Republican   Romney    Republican      No</code></pre>
-<pre class="r"><code>glimpse(county_data)</code></pre>
-<pre><code>## Rows: 3,195
-## Columns: 32
-## $ id               &lt;chr&gt; &quot;0&quot;, &quot;01000&quot;, &quot;01001&quot;, &quot;01003&quot;, &quot;01005&quot;, &quot;01007&quot;, &quot;0…
-## $ name             &lt;chr&gt; NA, &quot;1&quot;, &quot;Autauga County&quot;, &quot;Baldwin County&quot;, &quot;Barbou…
-## $ state            &lt;fct&gt; NA, AL, AL, AL, AL, AL, AL, AL, AL, AL, AL, AL, AL, …
-## $ census_region    &lt;fct&gt; NA, South, South, South, South, South, South, South,…
-## $ pop_dens         &lt;fct&gt; &quot;[   50,  100)&quot;, &quot;[   50,  100)&quot;, &quot;[   50,  100)&quot;, &quot;…
-## $ pop_dens4        &lt;fct&gt; &quot;[ 45,  118)&quot;, &quot;[ 45,  118)&quot;, &quot;[ 45,  118)&quot;, &quot;[118,7…
-## $ pop_dens6        &lt;fct&gt; &quot;[ 82,  215)&quot;, &quot;[ 82,  215)&quot;, &quot;[ 82,  215)&quot;, &quot;[ 82, …
-## $ pct_black        &lt;fct&gt; &quot;[10.0,15.0)&quot;, &quot;[25.0,50.0)&quot;, &quot;[15.0,25.0)&quot;, &quot;[ 5.0,…
-## $ pop              &lt;int&gt; 318857056, 4849377, 55395, 200111, 26887, 22506, 577…
-## $ female           &lt;dbl&gt; 50.8, 51.5, 51.5, 51.2, 46.5, 46.0, 50.6, 45.2, 53.4…
-## $ white            &lt;dbl&gt; 77.7, 69.8, 78.1, 87.3, 50.2, 76.3, 96.0, 27.2, 54.3…
-## $ black            &lt;dbl&gt; 13.2, 26.6, 18.4, 9.5, 47.6, 22.1, 1.8, 69.9, 43.6, …
-## $ travel_time      &lt;dbl&gt; 25.5, 24.2, 26.2, 25.9, 24.6, 27.6, 33.9, 26.9, 24.0…
-## $ land_area        &lt;dbl&gt; 3531905, 50645, 594, 1590, 885, 623, 645, 623, 777, …
-## $ hh_income        &lt;int&gt; 53046, 43253, 53682, 50221, 32911, 36447, 44145, 320…
-## $ su_gun4          &lt;fct&gt; NA, NA, &quot;[11,54]&quot;, &quot;[11,54]&quot;, &quot;[ 5, 8)&quot;, &quot;[11,54]&quot;, …
-## $ su_gun6          &lt;fct&gt; NA, NA, &quot;[10,12)&quot;, &quot;[10,12)&quot;, &quot;[ 7, 8)&quot;, &quot;[10,12)&quot;, …
-## $ fips             &lt;dbl&gt; 0, 1000, 1001, 1003, 1005, 1007, 1009, 1011, 1013, 1…
-## $ votes_dem_2016   &lt;int&gt; NA, NA, 5908, 18409, 4848, 1874, 2150, 3530, 3716, 1…
-## $ votes_gop_2016   &lt;int&gt; NA, NA, 18110, 72780, 5431, 6733, 22808, 1139, 4891,…
-## $ total_votes_2016 &lt;int&gt; NA, NA, 24661, 94090, 10390, 8748, 25384, 4701, 8685…
-## $ per_dem_2016     &lt;dbl&gt; NA, NA, 0.2396, 0.1957, 0.4666, 0.2142, 0.0847, 0.75…
-## $ per_gop_2016     &lt;dbl&gt; NA, NA, 0.734, 0.774, 0.523, 0.770, 0.899, 0.242, 0.…
-## $ diff_2016        &lt;int&gt; NA, NA, 12202, 54371, 583, 4859, 20658, 2391, 1175, …
-## $ per_dem_2012     &lt;dbl&gt; NA, NA, 0.266, 0.216, 0.513, 0.262, 0.123, 0.763, 0.…
-## $ per_gop_2012     &lt;dbl&gt; NA, NA, 0.726, 0.774, 0.483, 0.731, 0.865, 0.235, 0.…
-## $ diff_2012        &lt;int&gt; NA, NA, 11012, 47443, 334, 3931, 17780, 2808, 714, 1…
-## $ winner           &lt;chr&gt; NA, NA, &quot;Trump&quot;, &quot;Trump&quot;, &quot;Trump&quot;, &quot;Trump&quot;, &quot;Trump&quot;,…
-## $ partywinner16    &lt;chr&gt; NA, NA, &quot;Republican&quot;, &quot;Republican&quot;, &quot;Republican&quot;, &quot;R…
-## $ winner12         &lt;chr&gt; NA, NA, &quot;Romney&quot;, &quot;Romney&quot;, &quot;Obama&quot;, &quot;Romney&quot;, &quot;Romn…
-## $ partywinner12    &lt;chr&gt; NA, NA, &quot;Republican&quot;, &quot;Republican&quot;, &quot;Democrat&quot;, &quot;Rep…
-## $ flipped          &lt;chr&gt; NA, NA, &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;No&quot;, &quot;…</code></pre>
-<pre class="r"><code># we have data on 3195 FIPS....
-
-glimpse(county_map)</code></pre>
-<pre><code>## Rows: 191,382
-## Columns: 7
-## $ long  &lt;dbl&gt; 1225889, 1235324, 1244873, 1244129, 1272010, 1276797, 1273832, …
-## $ lat   &lt;dbl&gt; -1275020, -1274008, -1272331, -1267515, -1262889, -1295514, -12…
-## $ order &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, …
-## $ hole  &lt;lgl&gt; FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, …
-## $ piece &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
-## $ group &lt;fct&gt; 0500000US01001.1, 0500000US01001.1, 0500000US01001.1, 0500000US…
-## $ id    &lt;chr&gt; &quot;01001&quot;, &quot;01001&quot;, &quot;01001&quot;, &quot;01001&quot;, &quot;01001&quot;, &quot;01001&quot;, &quot;01001&quot;, …</code></pre>
-<pre class="r"><code># ... but to create a map, we translate these 3195 counties to 191,382 polygons!</code></pre>
-</div>
-<div id="joing-the-files" class="section level2">
-<h2>Joing the files</h2>
-<p>We have three files</p>
-<ol style="list-style-type: decimal">
-<li><code>nyt_mask_survey</code>, our NYT survey data,</li>
-<li><code>county_map</code> that has all polygons that define a county</li>
-<li><code>county_data</code> with demographics/election data.</li>
-</ol>
-<pre class="r"><code>county_full &lt;- left_join(county_map, county_data, by = &quot;id&quot;)
-
-county_masks_full &lt;- left_join(county_full, nyt_mask_survey, 
-                                by = c(&quot;id&quot;=&quot;countyfp&quot;))</code></pre>
-</div>
-<div id="building-our-choropleth-plot" class="section level2">
-<h2>Building our choropleth plot</h2>
-<pre class="r"><code>p &lt;- ggplot(data = county_masks_full,
-            mapping = aes(x = long, y = lat,
-                          fill = delta, 
-                          group = group))
-
-p1 &lt;- p + 
-  geom_polygon(color = &quot;gray90&quot;, size = 0.05) + 
-  coord_equal()
-
-
-
-p2 &lt;- p1 + 
-  scale_fill_gradient(low = &#39;#ffffcc&#39;, high= &#39;#006837&#39;)
-
-p3 &lt;- p1 + 
-  scale_fill_gradient2()
-
-# get different colours from https://colorbrewer2.org/
-# the one shown here is https://colorbrewer2.org/#type=diverging&amp;scheme=BrBG&amp;n=6
-p4 &lt;- p1 + 
-  scale_fill_gradientn(colours = c(&#39;#8c510a&#39;,&#39;#d8b365&#39;,&#39;#f6e8c3&#39;,&#39;#c7eae5&#39;,&#39;#5ab4ac&#39;,&#39;#01665e&#39;))
-
-p1</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/plot_choropleths-1.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p2</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/plot_choropleths-2.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p3</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/plot_choropleths-3.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p4</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/plot_choropleths-4.png" width="648" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>p4 + labs(fill = &quot;Mask acceptance, (Mostly Yes - Mostly No)&quot;, 
-          caption = &quot;“Estimates from The New York Times, based on roughly 250,000 interviews \nconducted by Dynata from July 2 to July 14, 2020”&quot;) +
-  guides(fill = guide_legend(nrow = 1)) + 
-  theme_map() + 
-  theme(legend.position = &quot;bottom&quot;)</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/plot_choropleths-5.png" width="648" style="display: block; margin: auto;" /></p>
-</div>
-<div id="checking-for-relationships" class="section level2">
-<h2>Checking for relationships</h2>
-<p>Does mask use acceptance have any relation with some demographics? Let us explor the relationship between country household income, population, and % who voted republican in 2016</p>
-<pre class="r"><code>county_masks_full %&gt;% 
-  select(hh_income, pop, per_gop_2016, delta) %&gt;% 
-  GGally::ggpairs()+
-  theme_minimal()</code></pre>
-<p><img src="../../blogs/blog5_files/figure-html/ggpairs-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
 
                         </div>

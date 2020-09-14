@@ -1,13 +1,12 @@
 ---
 date: "2017-10-31T22:42:51-05:00"
-description: Is mask acceptance high in the Us?
+description: How are the directors  perceived by IMDB users?
 draft: false
-image: pic07.jpg
+image: pic01.jpg
 keywords: ""
 slug: blog5
-title: Mask Acceptance   
+title: Tim Burton vs Steven Spielberg 
 ---
-
 
 
 ```{r, setup, echo=FALSE}
@@ -27,137 +26,140 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r load-libraries,echo=FALSE}
-library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
-library(janitor)
-library(skimr)
-library(vroom)
+```{r load-libraries, echo=FALSE}
+library(Rmisc) # we load Rmisc library in order to use CI function
 library(mosaic)
+library(ggthemes)
+library(GGally)
+library(readxl)
 library(here)
-
-#remotes::install_github("kjhealy/socviz")
-library(socviz)
+library(skimr)
+library(janitor)
+library(broom)
+library(tidyquant)
+library(infer)
+library(openintro)
+library(kableExtra)
+library(scales)
+library(knitr)
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
 ```
 
 
-## NYT mask use
 
-Github source for data https://github.com/nytimes/covid-19-data/tree/master/mask-use
+# IMDB ratings: Differences between directors
 
-
-## Getting the data 
-
-```{r, read_data}
-
-#source for data
-url <- "https://github.com/nytimes/covid-19-data/raw/master/mask-use/mask-use-by-county.csv"
-
-nyt_mask_survey <- read_csv(url)
-
-nyt_mask_survey <- nyt_mask_survey %>%
-  clean_names() %>% 
-  mutate(
-    mostly_yes= frequently+always,
-    mostly_no = never+rarely,
-    delta = mostly_yes-mostly_no
-  )
-
-glimpse(nyt_mask_survey)
-```
-
-## Choropleth map
-
-The FIPS code is a federal code that numbers states and territories of the US. It extends to the county level with an additional four digits, so every county in the US has a unique six-digit identifier, where the first two digits represent the state. 
-
-We will be using Kieran Healy's `socviz` package which among other things contains `county_map` and `county_data`  
-
-```{r}
-# America’s choropleths; use county_map that has all polygons 
-# and county data with demographics/election data from socviz datafile
-# The id field is the FIPS code for the county
-county_map %>% 
-  sample_n(5)
-
-county_data %>%
-    sample_n(5)
+We are going to explore whether the mean IMDB rating for Steven Spielberg and Tim Burton are the same or not. 
 
 
-glimpse(county_data)
-# we have data on 3195 FIPS....
+We write down the null and alternative hypotheses.
 
-glimpse(county_map)
-# ... but to create a map, we translate these 3195 counties to 191,382 polygons!
+*Null Hypothesis (H0)* | The mean IMDB rating for Spielberg films = The mean IMDB rating for Burton films (Mean IMDB rating for Spielberg films - Mean IMDB rating for Burton films = 0)
+*Alternative Hypothesis (H1)* | The mean IMDB rating for Spielberg films != The mean IMDB rating for Burton films (Mean IMDB rating for Spielberg films - Mean IMDB rating for Burton films != 0 )
 
+## Load the data
+```{r load_movies_data}
 
+movies <- read_csv(here::here("data", "movies.csv"))
+glimpse(movies)
+skim(movies)
 
+# We use the duplicated() function to identify duplicates, and find that there are none
+summary(duplicated(movies))
 
 ```
 
-## Joing the files
 
-We have three files
+```{r reproducing_director_CI, fig.width=10, fig.height=6}
 
-1. `nyt_mask_survey`, our NYT survey data, 
-1. `county_map` that has all polygons that define a county
-1. `county_data` with demographics/election data.
+director_rating <- movies %>% 
+  filter(director %in% c("Steven Spielberg","Tim Burton"))
 
+# We summarise data using mean and CI functions
+director_rating2 <- director_rating %>%
+  group_by(director) %>%
+  dplyr::summarise(mean_rating = mean(rating),
+            uci_rating = CI(rating)[1],
+            lci_rating = CI(rating)[3])
 
+# We use geom_errorbar and geom_react in order to reproduce the graph
+ggplot(director_rating2, aes(x = mean_rating, y = reorder(director, mean_rating), colour=director)) +
+  geom_point(size=5, show.legend = FALSE)+
+  # We use geom_rect to draw overlapping sections
+  geom_rect(aes(xmin=uci_rating[2], xmax=lci_rating[1], ymin=-Inf, ymax=Inf), colour = "light grey", alpha = 0.2)+
+  
+  # We use geom_errorbar to draw CI intervals
+  geom_errorbar(aes(xmin = lci_rating, xmax = uci_rating), size=1.3, width=.05, show.legend = FALSE)+
+  geom_text(aes(label = round(lci_rating,2), x = lci_rating), size= 4.5, vjust = -1, colour ="black")+
+  geom_text(aes(label = round(mean_rating,2), x = mean_rating), size= 6, vjust = -1, colour ="black")+
+  geom_text(aes(label = round(uci_rating,2), x = uci_rating), size= 4, vjust = -1, colour ="black")+
+  
+  labs(x="Mean IMBD Rating", 
+       y= "", title= "Do Spielberg and Burton have the same mean IMDB ratings?", 
+       subtitle= "95% confidence intervals overlap")+
+  theme_bw()+
+  NULL
 
-```{r, join_data}
-
-
-county_full <- left_join(county_map, county_data, by = "id")
-
-county_masks_full <- left_join(county_full, nyt_mask_survey, 
-                                by = c("id"="countyfp"))
 ```
 
-## Building our choropleth plot
+In addition, we run a hypothesis test using both the `t.test` command and the `infer` package to simulate from a null distribution, where we assume zero difference between the two.
 
-```{r, plot_choropleths, cache=TRUE}
+## Hypothesis testing
+```{r director_rating_t.test}
 
-p <- ggplot(data = county_masks_full,
-            mapping = aes(x = long, y = lat,
-                          fill = delta, 
-                          group = group))
-
-p1 <- p + 
-  geom_polygon(color = "gray90", size = 0.05) + 
-  coord_equal()
-
-
-
-p2 <- p1 + 
-  scale_fill_gradient(low = '#ffffcc', high= '#006837')
-
-p3 <- p1 + 
-  scale_fill_gradient2()
-
-# get different colours from https://colorbrewer2.org/
-# the one shown here is https://colorbrewer2.org/#type=diverging&scheme=BrBG&n=6
-p4 <- p1 + 
-  scale_fill_gradientn(colours = c('#8c510a','#d8b365','#f6e8c3','#c7eae5','#5ab4ac','#01665e'))
-
-p1
-p2
-p3
-p4
-
-
-p4 + labs(fill = "Mask acceptance, (Mostly Yes - Mostly No)", 
-          caption = "“Estimates from The New York Times, based on roughly 250,000 interviews \nconducted by Dynata from July 2 to July 14, 2020”") +
-  guides(fill = guide_legend(nrow = 1)) + 
-  theme_map() + 
-  theme(legend.position = "bottom")
+director_rating <- movies %>%
+    filter(director %in% c("Steven Spielberg","Tim Burton")) # select directors
+  t.test(rating~director, director_rating)
+  
 ```
+First, we use the t.test to calculate the p-Value. We conclude that there is a statistically significant difference in means, since our p-value is 0.01 and hence |p|<a (where a=0.05) (or |t| > 2.00). Therefore, we reject the null hypothesis. Now we run the simulation with the infer package:
 
-## Checking for relationships
+```{r infer_hypothesis_test}
 
-Does mask use acceptance have any relation with some demographics? Let us explor the relationship between country household income, population, and % who voted republican in 2016
+set.seed(1234) # We set a specific seed value
 
-```{r, ggpairs, cache=TRUE}
-county_masks_full %>% 
-  select(hh_income, pop, per_gop_2016, delta) %>% 
-  GGally::ggpairs()+
-  theme_minimal()
+# We run a simulation with infer package
+
+director_hypothesis_test<- director_rating %>%
+  
+  specify(rating ~ director) %>%
+  
+  # Here, `hypothesize` is used to set the null hypothesis as a test for independence, i.e., that there is no difference between the two population means.
+  hypothesise(null="independence") %>% 
+  # The `type` argument within generate is set to permute, which is the argument when generating a null distribution for a hypothesis test.
+  generate(reps=1000, type="permute") %>% 
+  #calculate the observed difference in means with bootstrap
+  calculate(stat="diff in means",order = c("Steven Spielberg","Tim Burton"))
+
+
+diff_rating <- director_rating %>% 
+  specify(rating ~ director) %>% 
+  calculate(stat = "diff in means", order = c("Steven Spielberg","Tim Burton"))
+#get p_Value through infer package 
+director_p_value <- director_hypothesis_test %>% 
+    get_p_value(obs_stat = diff_rating[1,1], direction = "both")
+
+kbl(director_p_value,col.names=c("p-value"), caption="Simulation-based null distribution using the 'infer' package") %>%
+kable_styling()
+
 ```
+Again, on the basis of this simulation-based hypothesis test we reject the null hypothesis stating that there is no difference in means of IMDB rating for Spielberg films and for Burton films as the p-Value is smaller than the alpha value (0.05). Therefore there is statistically significant difference between the mean ratings of the films of the two film directors. We visualise the simulation-based null distribution:
+
+```{r visualizeinfer_bootstrap_hypothesis_test, fig.width=15, fig.height=5}
+
+#We calculate CI using infer package
+director_percentile_ci <- director_hypothesis_test %>%
+  get_confidence_interval(level = 0.95, type = "percentile")
+
+#We show a plot with shaded confidence interval using infer package
+director_hypothesis_test %>% visualise() +
+  
+  shade_confidence_interval(endpoints = director_percentile_ci, size=0.4, color= "yellow", fill="light yellow") +
+  shade_p_value(obs_stat = diff_rating, direction = "both", size=1.1) +
+  
+  labs(title = "Are Spielberg and Burton Equally Good Directors?", 
+       subtitle="Simulation-based null distribution: the p-value (red) lies well outside the null distribution (yellow), allowing us to reject the null hypothesis", x="Difference in Mean IMDB Rating Between Directors", y="Count")+theme_fivethirtyeight() + theme(axis.title = element_text()) + scale_x_continuous(breaks=seq(-1.0, 1.0, by = 0.1), limits=c(-1.0,1.0))
+
+```
+In the graph it is shown that the p-value is outside of the 95% confidence interval (alpha = 0.05). We therefore reject the null hypothesis (H0) that there is no difference in the mean IMDB ratings of the films of Tim Burton and Steven Spielberg. 
+

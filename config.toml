@@ -82,7 +82,7 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Hi, my name is Bartek"
-    subtitle = "This is my first website"
+    subtitle = "I have recently started my adventure with R and this is my first website with some sample analyses"
     buttonText = "Get Started"
 
 
@@ -92,8 +92,8 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "NYT Masks"
-      subtitle = "How does mask use acceptance vary in the US?"
+      title = "Tim Burton vs Steven Spielberg"
+      subtitle = "How are the directors  perceived by IMDB users?"
       image = "pic01.jpg"
       url = "blogs/blog5"
 
@@ -103,11 +103,11 @@ disqusShortname = ""
       image = "pic02.jpg"
       url = "projects/project1"
 
-#    [[params.tiles.showcase]]
-#      title = "Magna"
-#     subtitle = "Lorem Etiam Nullam"
-#      image = "pic03.jpg"
-#      url = "blogs/magna"
+    [[params.tiles.showcase]]
+      title = "Trump approval pollist"
+      subtitle = "Has anything changed during last few months?"
+      image = "pic03.jpg"
+      url = "projects/project2"
 
 #    [[params.tiles.showcase]]
 #      title = "Ipsum"
@@ -166,19 +166,19 @@ disqusShortname = ""
     # Contact Section
     # You can add multiple emails, phone numbers, or addresses
     # by copying the corresponding map with frontmatter code.
-    [[params.contact.email]]
+    #[[params.contact.email]]
     #title = "Email"
     #email = "example@domain.com"
 
-    [[params.contact.phone]]
+    #[[params.contact.phone]]
     #title = "Phone"
     #phone = "(000) 000-0000 x1234"
 
     [[params.contact.address]]
-    #title = "Address"
+    title = "Regent's Park"
     #street = "Street"
-    #city = "City, ST 00000"
-    #country = "Country"
+    city = "London, NW1 4SA"
+    country = "United Kingdom"
 
   # Footer section
   [params.footer]
