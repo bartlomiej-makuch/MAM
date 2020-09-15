@@ -101,13 +101,13 @@ disqusShortname = ""
       title = "Sample GDP analysis"
       subtitle = "Mature vs emerging markets"
       image = "pic02.jpg"
-      url = "projects/project1"
+      url = "blogs/project1"
 
     [[params.tiles.showcase]]
       title = "Trump approval pollist"
       subtitle = "Has anything changed during last few months?"
       image = "pic03.jpg"
-      url = "projects/project2"
+      url = "blogs/project2"
 
 #    [[params.tiles.showcase]]
 #      title = "Ipsum"
@@ -138,8 +138,8 @@ disqusShortname = ""
   # Section Type Two
   [params.two]
     enable = true
-    title = "Blog Templates"
-    subtitle = """Please bear in mind that the site is under construction"""
+    title = "Sample analyses"
+    subtitle = """Please bear in mind that I have recently took up R and do not expect rocket science"""
     buttonText = "Get Started"
     url = "blogs"
 
